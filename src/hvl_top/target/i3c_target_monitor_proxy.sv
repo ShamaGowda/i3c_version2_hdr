@@ -126,11 +126,42 @@ task i3c_target_monitor_proxy::run_phase(uvm_phase phase);
           $sformatf("SDR txn: converted cfg struct\n%p", struct_cfg),
           UVM_HIGH)
 
-        i3c_target_mon_bfm_h.sample_data(struct_packet, struct_cfg);
+     case(struct_packet.txn_type)
+
+  i3c_target_tx::HDR_WRITE: begin
+    i3c_target_mon_bfm_h.sample_hdr_write(
+      struct_packet,
+      struct_cfg
+    );
+  end
+
+  i3c_target_tx::HDR_READ: begin
+    i3c_target_mon_bfm_h.sample_hdr_read(
+      struct_packet,
+      struct_cfg
+    );
+  end
+
+  default: begin
+    i3c_target_mon_bfm_h.sample_data(
+      struct_packet,
+      struct_cfg
+    );
+  end
+
+endcase
+
+
+ 
+
         i3c_target_seq_item_converter::to_class(struct_packet, tx);
 
-        $cast(tx_packet, tx.clone());
-        tx_packet.txn_type = i3c_target_tx::SDR;
+     $cast(tx_packet, tx.clone());
+
+tx_packet.txn_type =
+  i3c_target_tx::txn_type_e'(struct_packet.txn_type);
+
+
 
         `uvm_info(get_type_name(),
           $sformatf("SDR packet captured:\n%s", tx_packet.sprint()),

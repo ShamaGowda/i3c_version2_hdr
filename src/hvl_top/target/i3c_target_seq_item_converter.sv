@@ -60,7 +60,7 @@ function void i3c_target_seq_item_converter::from_class(
 
 
  
-output_conv.txn_type = bit'(input_conv_h.txn_type);
+output_conv.txn_type = input_conv_h.txn_type;
 output_conv.pid             = input_conv_h.pid;
   output_conv.bcr             = input_conv_h.bcr;
   output_conv.dcr             = input_conv_h.dcr;

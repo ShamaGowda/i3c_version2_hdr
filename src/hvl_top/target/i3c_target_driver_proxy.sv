@@ -62,56 +62,100 @@ task i3c_target_driver_proxy::run_phase(uvm_phase phase);
    
     i3c_target_cfg_converter::from_class(i3c_target_agent_cfg_h, struct_cfg);
 
-   if(req.txn_type == i3c_target_tx::DAA) begin
-   `uvm_info("TGT_DRV_PROXY",
-        "Transaction type = DAA, calling drive_daa_data", UVM_NONE)
+case(req.txn_type)
 
-     i3c_target_seq_item_converter::from_class(req, struct_packet);
+  i3c_target_tx::DAA: begin
 
-     i3c_target_drv_bfm_h.drive_daa_data(
-        struct_packet,
-        struct_cfg,
-        pid_out,
-        bcr_out,
-        dcr_out,
-        dyn_addr_out,
-        daa_ack_out
-      );
+    `uvm_info("TGT_DRV_PROXY",
+      "Transaction type = DAA", UVM_NONE)
 
-      req.pid             = pid_out;
-      req.bcr             = bcr_out;
-      req.dcr             = dcr_out;
-      req.dynamic_address = dyn_addr_out;
-      req.daa_ack         = daa_ack_out;
+    i3c_target_seq_item_converter::from_class(req, struct_packet);
 
-      `uvm_info("TGT_DRV_PROXY", $sformatf(
-        "DAA complete: PID=0x%0h BCR=0x%0h DCR=0x%0h DynAddr=0x%0h ACK=%0b",
-        pid_out, bcr_out, dcr_out, dyn_addr_out, daa_ack_out), UVM_NONE)
-if(daa_ack_out == ACK) begin
-  i3c_target_agent_cfg_h.targetAddress = dyn_addr_out;
-  `uvm_info("TGT_DRV_PROXY",
-    $sformatf("DAA: targetAddress updated to dynamic 0x%0h",
-              dyn_addr_out), UVM_LOW)
-end
+    i3c_target_drv_bfm_h.drive_daa_data(
+      struct_packet,
+      struct_cfg,
+      pid_out,
+      bcr_out,
+      dcr_out,
+      dyn_addr_out,
+      daa_ack_out
+    );
 
-     i3c_target_seq_item_converter::to_class(struct_packet, req);
+    req.pid             = pid_out;
+    req.bcr             = bcr_out;
+    req.dcr             = dcr_out;
+    req.dynamic_address = dyn_addr_out;
+    req.daa_ack         = daa_ack_out;
 
-    end else begin
-
-   `uvm_info("TGT_DRV_PROXY",
-        "Transaction type = SDR, calling drive_data", UVM_NONE)
-
-      i3c_target_seq_item_converter::from_class(req, struct_packet);
-      i3c_target_drv_bfm_h.drive_data(struct_packet, struct_cfg);
-      i3c_target_seq_item_converter::to_class(struct_packet, req);
-
+    if(daa_ack_out == ACK) begin
+      i3c_target_agent_cfg_h.targetAddress = dyn_addr_out;
     end
 
-    seq_item_port.item_done();
-    `uvm_info("TGT_DRV_PROXY", "item_done called", UVM_NONE)
+    i3c_target_seq_item_converter::to_class(struct_packet, req);
 
   end
 
+
+  i3c_target_tx::SDR: begin
+
+    `uvm_info("TGT_DRV_PROXY",
+      "Transaction type = SDR", UVM_NONE)
+
+    i3c_target_seq_item_converter::from_class(req, struct_packet);
+
+    i3c_target_drv_bfm_h.drive_data(
+      struct_packet,
+      struct_cfg
+    );
+
+    i3c_target_seq_item_converter::to_class(struct_packet, req);
+
+  end
+
+/////////////////////////////////////////////HDR/////////////////////////////////////////////////////////////
+  i3c_target_tx::HDR_WRITE: begin
+
+    `uvm_info("TGT_DRV_PROXY",
+      "Transaction type = HDR_WRITE", UVM_NONE)
+
+    i3c_target_seq_item_converter::from_class(req, struct_packet);
+
+    i3c_target_drv_bfm_h.drive_hdr_write(
+      struct_packet,
+      struct_cfg
+    );
+
+    i3c_target_seq_item_converter::to_class(struct_packet, req);
+
+  end
+
+
+  i3c_target_tx::HDR_READ: begin
+
+    `uvm_info("TGT_DRV_PROXY",
+      "Transaction type = HDR_READ", UVM_NONE)
+
+    i3c_target_seq_item_converter::from_class(req, struct_packet);
+
+    i3c_target_drv_bfm_h.drive_hdr_read(
+      struct_packet,
+      struct_cfg
+    );
+
+    i3c_target_seq_item_converter::to_class(struct_packet, req);
+
+  end
+
+
+  default: begin
+    `uvm_error("TGT_DRV_PROXY",
+      $sformatf("Unsupported txn_type %0d", req.txn_type))
+  end
+
+endcase
+seq_item_port.item_done();
 endtask : run_phase
 
 `endif
+
+

@@ -406,7 +406,47 @@ interface i3c_target_monitor_bfm(input pclk,
     `uvm_info("TARGET_DRIVER_BFM",
       $sformatf("scl %s detected", scl_edge_value.name()), UVM_HIGH);
   endtask: detectEdge_scl
-  
+
+
+///////////////////////////////////////////////HDR//////////////////////
+
+task sample_hdr_write(
+  inout i3c_transfer_bits_s struct_packet,
+  inout i3c_transfer_cfg_s struct_cfg
+);
+
+  detect_start();
+  sample_target_address(struct_packet);
+  sample_operation(struct_packet.operation);
+  sampleAddressAck(struct_packet.targetAddressStatus);
+
+  if(struct_packet.targetAddressStatus == ACK)
+    sampleWriteDataAndACK(struct_packet, struct_cfg);
+  else
+    detect_stop();
+
+endtask
+
+
+task sample_hdr_read(
+  inout i3c_transfer_bits_s struct_packet,
+  inout i3c_transfer_cfg_s struct_cfg
+);
+
+  detect_start();
+  sample_target_address(struct_packet);
+  sample_operation(struct_packet.operation);
+  sampleAddressAck(struct_packet.targetAddressStatus);
+
+  if(struct_packet.targetAddressStatus == ACK)
+    sampleReadDataAndACK(struct_packet, struct_cfg);
+  else
+    detect_stop();
+
+endtask
+
+
+//////////////////////////////////////////////////////////////////////////////////
 endinterface : i3c_target_monitor_bfm
  
 `endif

@@ -448,6 +448,64 @@ task driveAddressAck(input bit ack);
   drive_sda(1'b1);            
 endtask : driveAddressAck
 
+//////////////////////////HDR////////////////////////////////////////////////////////////////////////////////
+task drive_hdr_write(
+  inout i3c_transfer_bits_s pkt,
+  input i3c_transfer_cfg_s cfg
+);
+
+  `uvm_info(name,
+    "HDR WRITE transaction started",
+    UVM_HIGH)
+
+  detect_start();
+
+  sample_target_address(cfg,pkt);
+
+  sample_operation(pkt.operation);
+
+  driveAddressAck(pkt.targetAddressStatus);
+
+  if(pkt.targetAddressStatus == ACK)
+    sampleWriteDataAndDriveACK(pkt,cfg);
+
+  else
+    detect_stop();
+
+endtask
+
+
+task drive_hdr_read(
+  inout i3c_transfer_bits_s pkt,
+  input i3c_transfer_cfg_s cfg
+);
+
+  `uvm_info(name,
+    "HDR READ transaction started",
+    UVM_HIGH)
+
+  detect_start();
+
+  sample_target_address(cfg,pkt);
+
+  sample_operation(pkt.operation);
+
+  driveAddressAck(pkt.targetAddressStatus);
+
+  if(pkt.targetAddressStatus == ACK)
+    driveReadDataAndSampleACK(pkt,cfg);
+
+  else
+    detect_stop();
+
+endtask
+
+
+
+
+
+
+
   task sample_write_data(
     input  i3c_transfer_cfg_s cfg_pkt,
     inout  i3c_transfer_bits_s pkt,

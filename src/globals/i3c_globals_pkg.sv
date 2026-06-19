@@ -90,9 +90,12 @@ package i3c_globals_pkg;
     WRITE_READ  = 2'b10
   } writeReadMode_e;
 
-  typedef enum bit {
-    SDR = 1'b0,
-    DAA = 1'b1
+  typedef enum bit[1:0] {
+    SDR = 2'b00,
+    DAA = 2'b01,
+    HDR_WRITE = 2'10,
+    HDR_READ = 2'b11
+
   } txn_type_e;
 
 
@@ -107,7 +110,7 @@ package i3c_globals_pkg;
     bit [DATA_WIDTH-1:0] readData[MAXIMUM_BYTES];
     int no_of_i3c_bits_transfer; 
     bit [REGISTER_ADDRESS_WIDTH-1:0]register_address;
-   bit                              txn_type;
+  bit [1:0] txn_type;
     bit [47:0]                       pid;
     bit [7:0]                        bcr;
     bit [7:0]                        dcr;

@@ -1,4 +1,4 @@
-`ifndef I3C_TARGET_TX_INCLUDED_
+
 `define I3C_TARGET_TX_INCLUDED_
 
 class i3c_target_tx extends uvm_sequence_item;
@@ -15,10 +15,12 @@ class i3c_target_tx extends uvm_sequence_item;
   rand bit [31:0]                 size;
 
  
-  typedef enum bit {
-    SDR = 1'b0,
-    DAA = 1'b1
-  } txn_type_e;
+typedef enum bit [1:0] {
+    SDR,
+    DAA,
+    HDR_WRITE,
+    HDR_READ
+} txn_type_e; 
 
   rand txn_type_e   txn_type;         
   rand bit [47:0]   pid;               
@@ -140,51 +142,86 @@ function bit i3c_target_tx::do_compare(uvm_object rhs,
 endfunction : do_compare
 
 
-
 function void i3c_target_tx::do_print(uvm_printer printer);
   super.do_print(printer);
 
   printer.print_string("txn_type", txn_type.name());
 
-  if(txn_type == SDR) begin
+  if((txn_type == SDR) ||
+     (txn_type == HDR_WRITE) ||
+     (txn_type == HDR_READ)) begin
 
     printer.print_field("targetAddress",
       this.targetAddress, $bits(targetAddress), UVM_HEX);
+
     printer.print_string("targetAddressStatus",
       targetAddressStatus.name());
-    printer.print_string("operation", operation.name());
+
+    printer.print_string("operation",
+      operation.name());
 
     if(operation == WRITE) begin
+
       foreach(writeData[i])
-        printer.print_field($sformatf("writeData[%0d]", i),
-          this.writeData[i], $bits(writeData[i]), UVM_HEX);
+        printer.print_field(
+          $sformatf("writeData[%0d]", i),
+          this.writeData[i],
+          $bits(writeData[i]),
+          UVM_HEX
+        );
+
       foreach(writeDataStatus[i])
-        printer.print_string($sformatf("writeDataStatus[%0d]", i),
-          writeDataStatus[i].name());
-    end else begin
+        printer.print_string(
+          $sformatf("writeDataStatus[%0d]", i),
+          writeDataStatus[i].name()
+        );
+
+    end
+    else begin
+
       foreach(readData[i])
-        printer.print_field($sformatf("readData[%0d]", i),
-          this.readData[i], $bits(readData[i]), UVM_HEX);
+        printer.print_field(
+          $sformatf("readData[%0d]", i),
+          this.readData[i],
+          $bits(readData[i]),
+          UVM_HEX
+        );
+
       foreach(readDataStatus[i])
-        printer.print_string($sformatf("readDataStatus[%0d]", i),
-          readDataStatus[i].name());
+        printer.print_string(
+          $sformatf("readDataStatus[%0d]", i),
+          readDataStatus[i].name()
+        );
+
     end
 
-  end else begin
+  end
+  else if(txn_type == DAA) begin
 
     printer.print_field("pid",
       this.pid, $bits(pid), UVM_HEX);
+
     printer.print_field("bcr",
       this.bcr, $bits(bcr), UVM_HEX);
+
     printer.print_field("dcr",
       this.dcr, $bits(dcr), UVM_HEX);
+
     printer.print_field("dynamic_address",
-      this.dynamic_address, $bits(dynamic_address), UVM_HEX);
+      this.dynamic_address,
+      $bits(dynamic_address),
+      UVM_HEX);
+
     printer.print_field("daa_ack",
-      this.daa_ack, 1, UVM_BIN);
+      this.daa_ack,
+      1,
+      UVM_BIN);
+
   end
 
 endfunction : do_print
+
+
 
 
 
