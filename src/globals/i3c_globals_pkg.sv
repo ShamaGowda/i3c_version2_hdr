@@ -93,7 +93,7 @@ package i3c_globals_pkg;
   typedef enum bit[1:0] {
     SDR = 2'b00,
     DAA = 2'b01,
-    HDR_WRITE = 2'10,
+    HDR_WRITE = 2'b10,
     HDR_READ = 2'b11
 
   } txn_type_e;

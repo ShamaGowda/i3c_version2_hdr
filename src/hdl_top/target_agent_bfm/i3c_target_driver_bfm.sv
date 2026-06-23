@@ -449,30 +449,66 @@ task driveAddressAck(input bit ack);
 endtask : driveAddressAck
 
 //////////////////////////HDR////////////////////////////////////////////////////////////////////////////////
-task drive_hdr_write(
-  inout i3c_transfer_bits_s pkt,
-  input i3c_transfer_cfg_s cfg
-);
-
-  `uvm_info(name,
-    "HDR WRITE transaction started",
-    UVM_HIGH)
+task drive_hdr_write();
 
   detect_start();
 
-  sample_target_address(cfg,pkt);
+  sample_target_address();
 
-  sample_operation(pkt.operation);
+  sample_operation();
 
-  driveAddressAck(pkt.targetAddressStatus);
+  driveAddressAck();
 
-  if(pkt.targetAddressStatus == ACK)
-    sampleWriteDataAndDriveACK(pkt,cfg);
+  drive_hdr_entry();
 
-  else
-    detect_stop();
+  drive_hdr_ddr_data();
+
+  drive_hdr_crc();
+
+  drive_hdr_exit();
 
 endtask
+
+
+task drive_hdr_entry();
+
+  `uvm_info("HDR","Driving HDR Entry",UVM_LOW)
+
+endtask
+
+
+
+task drive_hdr_ddr_data();
+
+  foreach(req.hdr_data[i])
+  begin
+
+      drive_hdr_word(req.hdr_data[i]);
+
+  end
+
+endtask
+
+
+
+task drive_hdr_crc();
+
+  bit [4:0] crc;
+
+  crc = calculate_hdr_crc(req.hdr_data);
+
+  drive_crc_bits(crc);
+
+endtask
+
+
+
+task drive_hdr_exit();
+
+   `uvm_info("HDR","Driving HDR Exit Pattern",UVM_LOW)
+
+endtask
+
 
 
 task drive_hdr_read(

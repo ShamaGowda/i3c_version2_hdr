@@ -14,6 +14,15 @@ class i3c_target_tx extends uvm_sequence_item;
        acknowledge_e              readDataStatus[];
   rand bit [31:0]                 size;
 
+rand bit [15:0] hdr_data[$];
+bit [4:0] hdr_crc;
+bit hdr_parity;
+bit hdr_tbit;
+
+`uvm_field_queue_int(hdr_data,UVM_ALL_ON)
+`uvm_field_int(hdr_crc,UVM_ALL_ON)
+`uvm_field_int(hdr_parity,UVM_ALL_ON)
+`uvm_field_int(hdr_tbit,UVM_ALL_ON)
  
 typedef enum bit [1:0] {
     SDR,

@@ -410,22 +410,79 @@ interface i3c_target_monitor_bfm(input pclk,
 
 ///////////////////////////////////////////////HDR//////////////////////
 
-task sample_hdr_write(
-  inout i3c_transfer_bits_s struct_packet,
-  inout i3c_transfer_cfg_s struct_cfg
-);
+task sample_hdr_write();
 
-  detect_start();
-  sample_target_address(struct_packet);
-  sample_operation(struct_packet.operation);
-  sampleAddressAck(struct_packet.targetAddressStatus);
+ detect_start();
 
-  if(struct_packet.targetAddressStatus == ACK)
-    sampleWriteDataAndACK(struct_packet, struct_cfg);
-  else
-    detect_stop();
+ sample_target_address();
+
+ sample_operation();
+
+ sampleAddressAck();
+
+ sample_hdr_entry();
+
+ sample_hdr_ddr_data();
+
+ sample_hdr_crc();
+
+ sample_hdr_exit();
 
 endtask
+
+
+task sample_hdr_entry();
+
+   `uvm_info("HDR","HDR Entry detected",UVM_LOW)
+
+endtask
+
+task sample_hdr_ddr_data();
+
+ bit [15:0] word;
+
+ repeat(expected_words)
+ begin
+
+    sample_hdr_word(word);
+
+    tx.hdr_data.push_back(word);
+
+ end
+
+endtask
+
+
+task sample_hdr_crc();
+
+ bit [4:0] rx_crc;
+ bit [4:0] calc_crc;
+
+ rx_crc = sample_crc();
+
+ calc_crc = calculate_hdr_crc(tx.hdr_data);
+
+ if(rx_crc != calc_crc)
+ begin
+
+   `uvm_error("HDR",
+      $sformatf("CRC mismatch exp=%0h got=%0h",
+      calc_crc,rx_crc))
+
+ end
+
+endtask
+
+
+
+task sample_hdr_exit();
+
+   `uvm_info("HDR","HDR Exit detected",UVM_LOW)
+
+endtask
+
+
+
 
 
 task sample_hdr_read(
