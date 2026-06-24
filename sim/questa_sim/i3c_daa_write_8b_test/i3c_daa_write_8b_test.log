@@ -1,0 +1,13 @@
+# vsim -vopt work.hvl_top work.hdl_top -voptargs="+acc=npr" -sv_seed random -assertdebug "+UVM_TESTNAME=i3c_daa_write_8b_test" "+UVM_VERBOSITY=UVM_MEDIUM" "+define+" -l i3c_daa_write_8b_test/i3c_daa_write_8b_test.log -sva -coverage -c -do "log -r /*; add wave -r /*; coverage save -onexit -assert -directive -cvg -codeAll -testname i3c_daa_write_8b_test_seedrandom  i3c_daa_write_8b_test/i3c_daa_write_8b_test_coverage.ucdb; run -all; exit" -wlf i3c_daa_write_8b_test/waveform.wlf 
+# Start time: 15:52:36 on Jun 24,2026
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Error: (vopt-13130) Failed to find design unit hvl_top.
+#         Searched libraries:
+#             work
+# ** Error: (vopt-13130) Failed to find design unit hdl_top.
+#         Searched libraries:
+#             work
+# Optimization failed
+# Error loading design
+# End time: 15:52:37 on Jun 24,2026, Elapsed time: 0:00:01
+# Errors: 2, Warnings: 0

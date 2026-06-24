@@ -1,0 +1,449 @@
+** Error: ../../src/hvl_top/target/i3c_target_pkg.sv(23): Mismatched `endif compiler directive.
+** Error: ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(16): (vlog-13006) Could not find the package (apb_master_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(21)
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(21)
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(22)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(22)
+** at ../../src/hvl_top/apb_master/master_sequences//apb_master_vd_vws_seq.sv(34): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(23)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(23)
+** at ../../src/hvl_top/apb_master/master_sequences//apb_master_8b_write_seq.sv(43): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(24)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(24)
+** at ../../src/hvl_top/apb_master/master_sequences//apb_master_8b_write_read_seq.sv(35): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(25)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(25)
+** at ../../src/hvl_top/apb_master/master_sequences//apb_master_16b_write_seq.sv(37): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(26)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(26)
+** at ../../src/hvl_top/apb_master/master_sequences//apb_master_24b_write_seq.sv(35): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(27)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(27)
+** at ../../src/hvl_top/apb_master/master_sequences//apb_master_32b_write_seq.sv(35): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(28)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/apb_master/master_sequences/apb_master_seq_pkg.sv(28)
+** at ../../src/hvl_top/apb_master/master_sequences//apb_master_8b_read_seq.sv(43): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ../../src/hvl_top/env/i3c_env_pkg.sv(40): (vlog-13006) Could not find the package (apb_master_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(44)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(45)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(46)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(46)
+** at ../../src/hvl_top/env/i3c_scoreboard.sv(110): near ";": syntax error, unexpected ';', expecting '('.
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(46)
+** at ../../src/hvl_top/env/i3c_scoreboard.sv(312): near ";": syntax error, unexpected ';', expecting '('.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(46)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(46)
+** at ../../src/hvl_top/env/i3c_scoreboard.sv(356): near "end": syntax error, unexpected end.
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(46)
+** at ../../src/hvl_top/env/i3c_scoreboard.sv(411): near "endfunction": syntax error, unexpected endfunction, expecting endtask.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** at ../../src/hvl_top/env/i3c_scoreboard_expactedTargetAddressNACK.sv(5): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** at ../../src/hvl_top/env/i3c_scoreboard_expactedTargetAddressNACK.sv(5): near "endfunction": syntax error, unexpected endfunction, expecting endtask.
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** at ../../src/hvl_top/env/i3c_scoreboard_expactedTargetAddressNACK.sv(5): near "endfunction": syntax error, unexpected endfunction, expecting endtask.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** at ../../src/hvl_top/env/i3c_scoreboard_expactedTargetAddressNACK.sv(18): near "endfunction": syntax error, unexpected endfunction, expecting endtask.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** at ../../src/hvl_top/env/i3c_scoreboard_expactedTargetAddressNACK.sv(22): near "endfunction": syntax error, unexpected endfunction, expecting endtask.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** at ../../src/hvl_top/env/i3c_scoreboard_expactedTargetAddressNACK.sv(26): near "endfunction": syntax error, unexpected endfunction, expecting endtask.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error (suppressible): ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(47)
+** at ../../src/hvl_top/env/i3c_scoreboard_expactedTargetAddressNACK.sv(32): near "::": syntax error, unexpected ::, expecting ';' or '('.
+** Error (suppressible): ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** at ../../src/hvl_top/env/i3c_env.sv(52): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** at ../../src/hvl_top/env/i3c_env.sv(72): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/env/i3c_env_pkg.sv(48)
+** Error: ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(9): (vlog-13006) Could not find the package (apb_master_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(10): (vlog-13006) Could not find the package (apb_master_seq_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(13): (vlog-13006) Could not find the package (i3c_env_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(17)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(17)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(17)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(17)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(18)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(40)
+** Error: ** while parsing file included at ../../src/hvl_top/test/ral_virtual_sequences/i3c_ral_virtual_seq_pkg.sv(41)
+** Error: ../../src/hvl_top/test/virtual_sequences/i3c_virtual_seq_pkg.sv(13): (vlog-13006) Could not find the package (apb_master_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hvl_top/test/virtual_sequences/i3c_virtual_seq_pkg.sv(14): (vlog-13006) Could not find the package (i3c_env_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ** while parsing file included at ../../src/hvl_top/test/virtual_sequences/i3c_virtual_seq_pkg.sv(18)
+** Error: ** while parsing file included at ../../src/hvl_top/test/virtual_sequences/i3c_virtual_seq_pkg.sv(18)
+** Error: ** while parsing file included at ../../src/hvl_top/test/virtual_sequences/i3c_virtual_seq_pkg.sv(18)
+** Error: ** while parsing file included at ../../src/hvl_top/test/virtual_sequences/i3c_virtual_seq_pkg.sv(18)
+** Error: ** while parsing file included at ../../src/hvl_top/test/virtual_sequences/i3c_virtual_seq_pkg.sv(18)
+** Error: ../../src/hvl_top/test/i3c_test_pkg.sv(14): (vlog-13006) Could not find the package (apb_master_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hvl_top/test/i3c_test_pkg.sv(17): (vlog-13006) Could not find the package (i3c_env_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hvl_top/test/i3c_test_pkg.sv(18): (vlog-13006) Could not find the package (apb_master_seq_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hvl_top/test/i3c_test_pkg.sv(20): (vlog-13006) Could not find the package (i3c_virtual_seq_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hvl_top/test/i3c_test_pkg.sv(21): (vlog-13006) Could not find the package (i3c_ral_virtual_seq_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** at ../../src/hvl_top/test/i3c_base_test.sv(27): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** at ../../src/hvl_top/test/i3c_base_test.sv(28): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** at ../../src/hvl_top/test/i3c_base_test.sv(30): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** at ../../src/hvl_top/test/i3c_base_test.sv(34): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(23)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(24)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(24)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(24)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(24)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(24)
+** at ../../src/hvl_top/test/i3c_write_8b_test.sv(30): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(24)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(25)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(25)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(25)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(25)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(25)
+** at ../../src/hvl_top/test/i3c_multi_write_test.sv(19): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(25)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(26)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(26)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(26)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(26)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(26)
+** at ../../src/hvl_top/test/i3c_read_8b_test.sv(19): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(26)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(27)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(27)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(27)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(27)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(27)
+** at ../../src/hvl_top/test/i3c_write_read_8b_test.sv(18): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(27)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(28)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(28)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(28)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(28)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(28)
+** at ../../src/hvl_top/test/i3c_write_read_write_read_8b_test.sv(18): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(28)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(29)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(29)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(29)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(29)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(29)
+** at ../../src/hvl_top/test/i3c_invalid_addr_write_test.sv(18): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(29)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(30)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(30)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(30)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(30)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(30)
+** at ../../src/hvl_top/test/i3c_fifo_full_write_test.sv(18): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(30)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(31)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(31)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(31)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(31)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(31)
+** at ../../src/hvl_top/test/i3c_ccc_coverage_test.sv(21): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(31)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** at ../../src/hvl_top/test/i3c_daa_write_8b_test.sv(24): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(33)
+** at ../../src/hvl_top/test/i3c_daa_write_8b_test.sv(40): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** at ../../src/hvl_top/test/i3c_daa_read_8b_test.sv(24): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(34)
+** at ../../src/hvl_top/test/i3c_daa_read_8b_test.sv(40): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** at ../../src/hvl_top/test/i3c_daa_write_read_write_read_8b_test.sv(23): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(36)
+** at ../../src/hvl_top/test/i3c_daa_write_read_write_read_8b_test.sv(38): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** at ../../src/hvl_top/test/i3c_sdr_or_daa_write_8b_test.sv(23): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(37)
+** at ../../src/hvl_top/test/i3c_sdr_or_daa_write_8b_test.sv(38): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(38)
+** at ../../src/hvl_top/test/i3c_hdr_write_test.sv(21): near ";": syntax error, unexpected ';', expecting '('.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(38)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(38)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(38)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(38)
+** at ../../src/hvl_top/test/i3c_hdr_write_test.sv(25): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(39)
+** at ../../src/hvl_top/test/i3c_hdr_read_test.sv(21): near ";": syntax error, unexpected ';', expecting '('.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(39)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(39)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(39)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(39)
+** at ../../src/hvl_top/test/i3c_hdr_read_test.sv(25): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(41)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(41)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(41)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(41)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(41)
+** at ../../src/hvl_top/test/i3c_writeOperationWith8bitsData_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(42)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(42)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(42)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(42)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(42)
+** at ../../src/hvl_top/test/i3c_readOperationWith8bitsData_test.sv(33): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(43)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(43)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(43)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(43)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(43)
+** at ../../src/hvl_top/test/i3c_writeOperationWith16bitsData_test.sv(34): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(44)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(44)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(44)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(44)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(44)
+** at ../../src/hvl_top/test/i3c_readOperationWith16bitsData_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(45)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(45)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(45)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(45)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(45)
+** at ../../src/hvl_top/test/i3c_writeOperationWith32bitsData_test.sv(33): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(46)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(46)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(46)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(46)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(46)
+** at ../../src/hvl_top/test/i3c_readOperationWith32bitsData_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(47)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(47)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(47)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(47)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(47)
+** at ../../src/hvl_top/test/i3c_writeOperationWith64bitsData_test.sv(33): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(48)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(48)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(48)
+** at ../../src/hvl_top/test/i3c_readOperationWith64bitsData_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(49)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(49)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(49)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(49)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(49)
+** at ../../src/hvl_top/test/i3c_writeOperationWithMaximumbitsData_test.sv(33): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(50)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(50)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(50)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(50)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(50)
+** at ../../src/hvl_top/test/i3c_readOperationWithMaximumbitsData_test.sv(33): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(51)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(51)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(51)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(51)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(51)
+** at ../../src/hvl_top/test/i3c_writeOperationWith8bitsData_startStopCombination_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(52)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(52)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(52)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(52)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(52)
+** at ../../src/hvl_top/test/i3c_readOperationWith8bitsData_startStopCombination_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(53)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(53)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(53)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(53)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(53)
+** at ../../src/hvl_top/test/i3c_writeOperationWithRandomDataTransferWidth_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(54)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(54)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(54)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(54)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(54)
+** at ../../src/hvl_top/test/i3c_readOperationWithRandomDataTransferWidth_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(55)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(55)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(55)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(55)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(55)
+** at ../../src/hvl_top/test/i3c_randomOperationWithRandomDataTransferWidth_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(63)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(63)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(63)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(63)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(63)
+** at ../../src/hvl_top/test/i3c_WriteFollowedByReadOperationWith32bitsData_test.sv(33): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(64)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(64)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(64)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(64)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(64)
+** at ../../src/hvl_top/test/i3c_ReadFollowedByWriteFollowedByReadOperationWith32bitsData_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(65)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(65)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(65)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(65)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(65)
+** at ../../src/hvl_top/test/i3c_WriteFollowedByReadFollowedByWriteFollowedByReadOperationWith32bitsData_test.sv(33): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(66)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(66)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(66)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(66)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(66)
+** at ../../src/hvl_top/test/i3c_MultipleWritesMultipleReadsOperationWith32bitsData_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** at ../../src/hvl_top/test/i3c_writeOperationWithWrongTargetAddres_test.sv(25): near "::": syntax error, unexpected ::, expecting ')'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(67)
+** at ../../src/hvl_top/test/i3c_writeOperationWithWrongTargetAddres_test.sv(44): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(68)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(68)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(68)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(68)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(68)
+** at ../../src/hvl_top/test/i3c_writeOperationWithRandomWriteDataStatusNACK_test.sv(32): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(69)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(69)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(69)
+** Error: ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(69)
+** Error: (vlog-13069) ** while parsing file included at ../../src/hvl_top/test/i3c_test_pkg.sv(69)
+** at ../../src/hvl_top/test/i3c_WriteFollowedByReadOperationWithRepeatedStart_test.sv(27): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(40): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(40): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(40): (vlog-2730) Undefined variable: 'IDLE'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(48): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(48): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(48): (vlog-2730) Undefined variable: 'IDLE'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(82): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(82): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_driver_bfm.sv(82): (vlog-2730) Undefined variable: 'WRITE'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(36): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(36): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(36): (vlog-2730) Undefined variable: 'IDLE'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(44): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(44): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(44): (vlog-2730) Undefined variable: 'IDLE'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(55): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(55): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(55): (vlog-2730) Undefined variable: 'WRITE'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(135): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(135): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(135): (vlog-2730) Undefined variable: 'WRITE'.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(137): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(137): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/controller_agent_bfm/i3c_controller_monitor_bfm.sv(137): (vlog-2730) Undefined variable: 'READ'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(48): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(48): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(48): (vlog-2730) Undefined variable: 'IDLE'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(57): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(57): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(57): (vlog-2730) Undefined variable: 'IDLE'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(72): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(72): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(72): (vlog-2730) Undefined variable: 'WRITE'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(433): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(433): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(433): (vlog-2730) Undefined variable: 'WRITE'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(436): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(436): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_driver_bfm.sv(436): (vlog-2730) Undefined variable: 'READ'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(50): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(50): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(50): (vlog-2730) Undefined variable: 'IDLE'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(61): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(61): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(61): (vlog-2730) Undefined variable: 'WRITE'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(301): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(301): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(301): (vlog-2730) Undefined variable: 'WRITE'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(303): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(303): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(303): (vlog-2730) Undefined variable: 'READ'.
+** Error: ../../src/hdl_top/target_agent_bfm/i3c_target_monitor_bfm.sv(444): (vlog-2730) Undefined variable: 'expected_words'.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(37): (vlog-13006) Could not find the package (apb_master_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(99): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(99): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(123): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(123): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(181): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(181): Identifier 'READ' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(188): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_driver_bfm.sv(188): Identifier 'IDLE' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_monitor_bfm.sv(36): (vlog-13006) Could not find the package (apb_master_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_monitor_bfm.sv(98): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hdl_top/apb_master_agent_bfm/apb_master_monitor_bfm.sv(98): Identifier 'WRITE' is not directly visible.
+** Error: ../../src/hvl_top/hvl_top.sv(12): (vlog-13006) Could not find the package (i3c_test_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+Errors: 381, Warnings: 2
