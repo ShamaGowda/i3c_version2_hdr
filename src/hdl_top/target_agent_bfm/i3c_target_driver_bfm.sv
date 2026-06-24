@@ -451,7 +451,7 @@ endtask : driveAddressAck
 //////////////////////////HDR////////////////////////////////////////////////////////////////////////////////
 
 // ─── HDR WRITE: DUT sends HDR frames; target receives and ACKs ───────────
-task drive_hdr_write(
+task  automatic drive_hdr_write(
     inout i3c_transfer_bits_s pkt,
     input i3c_transfer_cfg_s  cfg);
 
@@ -475,9 +475,9 @@ task drive_hdr_write(
   hdr_wait_entry_pattern();
 
   // Step 3: Receive DDR data words from DUT
-  begin
-    int word_idx = 0;
-    fork
+ begin : hdr_rcv_block
+    automatic int word_idx = 0;
+    fork 
       begin : receive_words
         forever begin
           bit [15:0] word;
@@ -505,7 +505,7 @@ endtask : drive_hdr_write
 
 
 // ─── HDR READ: DUT requests data; target drives HDR-DDR frames ────────────
-task drive_hdr_read(
+task  automatic  drive_hdr_read(
     inout i3c_transfer_bits_s pkt,
     input i3c_transfer_cfg_s  cfg);
 
@@ -528,7 +528,7 @@ task drive_hdr_read(
 
   // Step 3: Drive DDR data words to DUT
   begin
-    int words = pkt.no_of_i3c_bits_transfer / 16;
+    automatic int words = pkt.no_of_i3c_bits_transfer / 16;
     for (int i = 0; i < words; i++) begin
       bit [15:0] word;
       // Pull data from FIFO loaded by test sequence, or use default
@@ -545,8 +545,8 @@ task drive_hdr_read(
   end
 
   // Step 4: Drive CRC-5 (5 bits MSB first on DDR edges)
-  begin
-    bit [4:0] crc5 = hdr_calc_crc5(pkt);
+ begin
+    automatic bit [4:0] crc5 = hdr_calc_crc5(pkt);
     hdr_drive_crc5(crc5);
   end
 
@@ -565,7 +565,7 @@ endtask : drive_hdr_read
 // ─── HDR Entry: wait for 3 SDA falling edges while SCL stays HIGH ─────────
 // Per I3C spec, the controller (DUT) signals HDR mode entry by toggling
 // SDA three times while keeping SCL high.
-task hdr_wait_entry_pattern();
+task automatic hdr_wait_entry_pattern();
   int        fall_count = 0;
   bit [1:0]  sda_sr     = 2'b11;
   bit [1:0]  scl_sr     = 2'b11;
@@ -591,7 +591,7 @@ endfunction : hdr_detect_exit
 // ─── Sample one 16-bit DDR word (DUT→target, write direction) ────────────
 // In HDR-DDR: bits are transmitted in pairs using both SCL edges.
 // Odd-index bits (15,13,11...) on SCL falling; even-index (14,12,10...) on rising.
-task hdr_sample_ddr_word(output bit [15:0] word);
+task automatic hdr_sample_ddr_word(output bit [15:0] word);
   int bits_done = 0;
   drive_sda(1'b1);  // release SDA — DUT (controller) is driving it
 
@@ -615,7 +615,7 @@ endtask : hdr_sample_ddr_word
 
 
 // ─── Drive one 16-bit DDR word (target→DUT, read direction) ──────────────
-task hdr_drive_ddr_word(input bit [15:0] word);
+task automatic hdr_drive_ddr_word(input bit [15:0] word);
   int b = 15;
 
   while (b >= 0) begin
@@ -643,7 +643,7 @@ endtask : hdr_drive_ddr_word
 
 
 // ─── Drive CRC-5 (5 bits MSB first, one bit per SCL falling edge) ─────────
-task hdr_drive_crc5(input bit [4:0] crc5);
+task automatic hdr_drive_crc5(input bit [4:0] crc5);
   `uvm_info(name,
     $sformatf("HDR: driving CRC-5 = 5'b%05b", crc5), UVM_HIGH)
   for (int b = 4; b >= 0; b--) begin
@@ -656,7 +656,7 @@ endtask : hdr_drive_crc5
 
 
 // ─── Drive T-bit (1 bit) ─────────────────────────────────────────────────
-task hdr_drive_tbit(input bit tbit);
+task automatic  hdr_drive_tbit(input bit tbit);
   detectEdge_scl(NEGEDGE);
   drive_sda(tbit);
   detectEdge_scl(POSEDGE);

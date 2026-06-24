@@ -154,6 +154,10 @@ case(req.txn_type)
 
 endcase
 seq_item_port.item_done();
+
+end 
+
+
 endtask : run_phase
 
 `endif
