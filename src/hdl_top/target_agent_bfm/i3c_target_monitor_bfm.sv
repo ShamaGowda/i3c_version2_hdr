@@ -410,25 +410,28 @@ interface i3c_target_monitor_bfm(input pclk,
 
 ///////////////////////////////////////////////HDR//////////////////////
 
-task sample_hdr_write();
+task automatic sample_hdr_write(inout i3c_transfer_bits_s pkt,
+                                 input i3c_transfer_cfg_s  cfg);
 
- detect_start();
+  detect_start();
+  sample_target_address(pkt);
+  sample_operation(pkt.operation);
+  sampleAddressAck(pkt.targetAddressStatus);
 
- sample_target_address();
+  if (pkt.targetAddressStatus == NACK) begin
+    detect_stop();
+    return;
+  end
 
- sample_operation();
+  sample_hdr_entry();
+  sample_hdr_ddr_data(pkt);
+  sample_hdr_crc();
+  sample_hdr_exit();
+  pkt.txn_type = HDR_WRITE;
 
- sampleAddressAck();
+endtask : sample_hdr_write
 
- sample_hdr_entry();
 
- sample_hdr_ddr_data();
-
- sample_hdr_crc();
-
- sample_hdr_exit();
-
-endtask
 
 
 task sample_hdr_entry();
@@ -437,20 +440,25 @@ task sample_hdr_entry();
 
 endtask
 
-task sample_hdr_ddr_data();
+task automatic sample_hdr_ddr_data(inout i3c_transfer_bits_s pkt);
 
- bit [15:0] word;
+  bit [15:0] word;
+  int        word_idx = 0;
 
- repeat(expected_words)
- begin
-
+  // Sample DDR words until HDR exit pattern detected (SDA=1 while SCL=1)
+  while (!(scl_i == 1'b1 && sda_i == 1'b1)) begin
     sample_hdr_word(word);
+    pkt.writeData[word_idx*2]   = word[15:8];
+    pkt.writeData[word_idx*2+1] = word[7:0];
+    word_idx++;
+    pkt.no_of_i3c_bits_transfer += 16;
+    // Check exit condition again before next word
+    if (scl_i == 1'b1 && sda_i == 1'b1) break;
+  end
 
-    tx.hdr_data.push_back(word);
+endtask : sample_hdr_ddr_data
 
- end
 
-endtask
 
 
 task sample_hdr_crc();

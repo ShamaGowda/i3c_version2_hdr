@@ -1,6 +1,5 @@
-
+`ifndef I3C_TARGET_TX_INCLUDED_
 `define I3C_TARGET_TX_INCLUDED_
-
 class i3c_target_tx extends uvm_sequence_item;
   `uvm_object_utils(i3c_target_tx)
 
