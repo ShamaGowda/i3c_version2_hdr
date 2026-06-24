@@ -449,97 +449,237 @@ task driveAddressAck(input bit ack);
 endtask : driveAddressAck
 
 //////////////////////////HDR////////////////////////////////////////////////////////////////////////////////
-task drive_hdr_write();
 
+// ─── HDR WRITE: DUT sends HDR frames; target receives and ACKs ───────────
+task drive_hdr_write(
+    inout i3c_transfer_bits_s pkt,
+    input i3c_transfer_cfg_s  cfg);
+
+  `uvm_info(name, "HDR WRITE (target side) started", UVM_HIGH)
+
+  // Step 1: SDR address phase (DUT drives 7E+W, ENTDAA-like preamble,
+  //         then the target's dynamic address). Target ACKs if address matches.
   detect_start();
-
-  sample_target_address();
-
-  sample_operation();
-
-  driveAddressAck();
-
-  drive_hdr_entry();
-
-  drive_hdr_ddr_data();
-
-  drive_hdr_crc();
-
-  drive_hdr_exit();
-
-endtask
-
-
-task drive_hdr_entry();
-
-  `uvm_info("HDR","Driving HDR Entry",UVM_LOW)
-
-endtask
-
-
-
-task drive_hdr_ddr_data();
-
-  foreach(req.hdr_data[i])
-  begin
-
-      drive_hdr_word(req.hdr_data[i]);
-
-  end
-
-endtask
-
-
-
-task drive_hdr_crc();
-
-  bit [4:0] crc;
-
-  crc = calculate_hdr_crc(req.hdr_data);
-
-  drive_crc_bits(crc);
-
-endtask
-
-
-
-task drive_hdr_exit();
-
-   `uvm_info("HDR","Driving HDR Exit Pattern",UVM_LOW)
-
-endtask
-
-
-
-task drive_hdr_read(
-  inout i3c_transfer_bits_s pkt,
-  input i3c_transfer_cfg_s cfg
-);
-
-  `uvm_info(name,
-    "HDR READ transaction started",
-    UVM_HIGH)
-
-  detect_start();
-
-  sample_target_address(cfg,pkt);
-
+  sample_target_address(cfg, pkt);
   sample_operation(pkt.operation);
-
   driveAddressAck(pkt.targetAddressStatus);
 
-  if(pkt.targetAddressStatus == ACK)
-    driveReadDataAndSampleACK(pkt,cfg);
-
-  else
+  if (pkt.targetAddressStatus == NACK) begin
+    `uvm_info(name, "HDR WRITE: address NACK — aborting", UVM_HIGH)
     detect_stop();
+    return;
+  end
 
-endtask
+  // Step 2: Wait for HDR entry pattern
+  // DUT toggles SDA 3 times while SCL=1 before starting DDR data
+  hdr_wait_entry_pattern();
+
+  // Step 3: Receive DDR data words from DUT
+  begin
+    int word_idx = 0;
+    fork
+      begin : receive_words
+        forever begin
+          bit [15:0] word;
+          // Exit when DUT drives HDR exit (SDA rises while SCL=1)
+          if (hdr_detect_exit()) begin
+            disable receive_words;
+          end
+          hdr_sample_ddr_word(word);
+          pkt.writeData[word_idx*2]   = word[15:8];
+          pkt.writeData[word_idx*2+1] = word[7:0];
+          targetFIFOMemory.push_back(word[15:8]);
+          targetFIFOMemory.push_back(word[7:0]);
+          word_idx++;
+          pkt.no_of_i3c_bits_transfer += 16;
+        end
+      end
+    join_none
+
+    wrDetect_stop();
+    disable fork;
+  end
+
+  `uvm_info(name, "HDR WRITE (target side) complete", UVM_HIGH)
+endtask : drive_hdr_write
+
+
+// ─── HDR READ: DUT requests data; target drives HDR-DDR frames ────────────
+task drive_hdr_read(
+    inout i3c_transfer_bits_s pkt,
+    input i3c_transfer_cfg_s  cfg);
+
+  `uvm_info(name, "HDR READ (target side) started", UVM_HIGH)
+
+  // Step 1: SDR address phase
+  detect_start();
+  sample_target_address(cfg, pkt);
+  sample_operation(pkt.operation);
+  driveAddressAck(pkt.targetAddressStatus);
+
+  if (pkt.targetAddressStatus == NACK) begin
+    `uvm_info(name, "HDR READ: address NACK — aborting", UVM_HIGH)
+    detect_stop();
+    return;
+  end
+
+  // Step 2: Wait for HDR entry pattern from DUT
+  hdr_wait_entry_pattern();
+
+  // Step 3: Drive DDR data words to DUT
+  begin
+    int words = pkt.no_of_i3c_bits_transfer / 16;
+    for (int i = 0; i < words; i++) begin
+      bit [15:0] word;
+      // Pull data from FIFO loaded by test sequence, or use default
+      if (targetFIFOMemory.size() >= 2) begin
+        word[15:8] = targetFIFOMemory.pop_front();
+        word[7:0]  = targetFIFOMemory.pop_front();
+      end else begin
+        word = {cfg.defaultReadData, cfg.defaultReadData};
+      end
+      hdr_drive_ddr_word(word);
+      pkt.readData[i*2]   = word[15:8];
+      pkt.readData[i*2+1] = word[7:0];
+    end
+  end
+
+  // Step 4: Drive CRC-5 (5 bits MSB first on DDR edges)
+  begin
+    bit [4:0] crc5 = hdr_calc_crc5(pkt);
+    hdr_drive_crc5(crc5);
+  end
+
+  // Step 5: Drive T-bit = 1 (end-of-data marker)
+  hdr_drive_tbit(1'b1);
+
+  // Release SDA
+  drive_sda(1'b1);
+
+  wrDetect_stop();
+  `uvm_info(name, "HDR READ (target side) complete", UVM_HIGH)
+endtask : drive_hdr_read
 
 
 
+// ─── HDR Entry: wait for 3 SDA falling edges while SCL stays HIGH ─────────
+// Per I3C spec, the controller (DUT) signals HDR mode entry by toggling
+// SDA three times while keeping SCL high.
+task hdr_wait_entry_pattern();
+  int        fall_count = 0;
+  bit [1:0]  sda_sr     = 2'b11;
+  bit [1:0]  scl_sr     = 2'b11;
+
+  while (fall_count < 3) begin
+    @(negedge pclk);
+    sda_sr = {sda_sr[0], sda_i};
+    scl_sr = {scl_sr[0], scl_i};
+    // SDA falling edge (1→0) while SCL was high both cycles
+    if (sda_sr == NEGEDGE && scl_sr == 2'b11)
+      fall_count++;
+  end
+  `uvm_info(name, "HDR: entry pattern detected (3 SDA falls, SCL=1)", UVM_MEDIUM)
+endtask : hdr_wait_entry_pattern
 
 
+// Returns 1 if HDR exit detected (SDA=1 while SCL=1 — like a STOP setup)
+function automatic bit hdr_detect_exit();
+  return (scl_i == 1'b1 && sda_i == 1'b1);
+endfunction : hdr_detect_exit
+
+
+// ─── Sample one 16-bit DDR word (DUT→target, write direction) ────────────
+// In HDR-DDR: bits are transmitted in pairs using both SCL edges.
+// Odd-index bits (15,13,11...) on SCL falling; even-index (14,12,10...) on rising.
+task hdr_sample_ddr_word(output bit [15:0] word);
+  int bits_done = 0;
+  drive_sda(1'b1);  // release SDA — DUT (controller) is driving it
+
+  while (bits_done < 16) begin
+    // Capture bit on SCL falling edge
+    detectEdge_scl(NEGEDGE);
+    word[15 - bits_done] = sda_i;
+    bits_done++;
+
+    if (bits_done < 16) begin
+      // Capture bit on SCL rising edge
+      detectEdge_scl(POSEDGE);
+      word[15 - bits_done] = sda_i;
+      bits_done++;
+    end
+  end
+
+  `uvm_info(name,
+    $sformatf("HDR: sampled DDR word = 0x%04x", word), UVM_HIGH)
+endtask : hdr_sample_ddr_word
+
+
+// ─── Drive one 16-bit DDR word (target→DUT, read direction) ──────────────
+task hdr_drive_ddr_word(input bit [15:0] word);
+  int b = 15;
+
+  while (b >= 0) begin
+    // Drive on SCL falling edge
+    detectEdge_scl(NEGEDGE);
+    drive_sda(word[b]);
+    b--;
+
+    if (b >= 0) begin
+      // Hold through SCL rising edge (DUT samples on rise)
+      detectEdge_scl(POSEDGE);
+      // Next bit drives on next fall — nothing to do here
+      // but we step b once more for the even-edge bit
+      // (the drive above covers the fall; DUT also samples SDA on rise
+      //  so we need to update SDA before the next fall)
+      drive_sda(word[b]);
+      b--;
+    end
+  end
+
+  drive_sda(1'b1);  // release after word
+  `uvm_info(name,
+    $sformatf("HDR: drove DDR word = 0x%04x", word), UVM_HIGH)
+endtask : hdr_drive_ddr_word
+
+
+// ─── Drive CRC-5 (5 bits MSB first, one bit per SCL falling edge) ─────────
+task hdr_drive_crc5(input bit [4:0] crc5);
+  `uvm_info(name,
+    $sformatf("HDR: driving CRC-5 = 5'b%05b", crc5), UVM_HIGH)
+  for (int b = 4; b >= 0; b--) begin
+    detectEdge_scl(NEGEDGE);
+    drive_sda(crc5[b]);
+    detectEdge_scl(POSEDGE);
+  end
+  drive_sda(1'b1);
+endtask : hdr_drive_crc5
+
+
+// ─── Drive T-bit (1 bit) ─────────────────────────────────────────────────
+task hdr_drive_tbit(input bit tbit);
+  detectEdge_scl(NEGEDGE);
+  drive_sda(tbit);
+  detectEdge_scl(POSEDGE);
+  drive_sda(1'b1);
+endtask : hdr_drive_tbit
+
+
+// ─── CRC-5 calculation: polynomial x^5+x^2+1 (0x05), seed 0x1F ──────────
+function automatic bit [4:0] hdr_calc_crc5(
+    input i3c_transfer_bits_s pkt);
+  bit [4:0] crc = 5'h1F;
+  int words = pkt.no_of_i3c_bits_transfer / 16;
+  for (int i = 0; i < words; i++) begin
+    bit [15:0] w = {pkt.readData[i*2], pkt.readData[i*2+1]};
+    for (int b = 15; b >= 0; b--) begin
+      bit inv = w[b] ^ crc[4];
+      crc = {crc[3:0], 1'b0};
+      if (inv) crc ^= 5'h05;
+    end
+  end
+  return ~crc;
+endfunction : hdr_calc_crc5
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
   task sample_write_data(

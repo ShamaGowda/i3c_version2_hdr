@@ -40,6 +40,11 @@ package i3c_ral_virtual_seq_pkg;
 `include "i3c_daa_virtual_seq.sv"
 `include "i3c_sdr_or_daa_virtual_seq.sv"
 
+//hdr ral sequences 
+
+ `include "i3c_hdr_write_virtual_seq.sv"
+  `include "i3c_hdr_read_virtual_seq.sv"
+
 endpackage : i3c_ral_virtual_seq_pkg
 
 `endif

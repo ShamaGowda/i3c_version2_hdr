@@ -15,6 +15,7 @@ class i3c_ctrl_reg extends uvm_reg;
   rand uvm_reg_field start;
        uvm_reg_field reserved;
   rand uvm_reg_field cmd_type;
+  rand uvm_reg_field cmd_mode;
   rand uvm_reg_field ccc;
   rand uvm_reg_field direction;
   rand uvm_reg_field length;
@@ -40,8 +41,13 @@ class i3c_ctrl_reg extends uvm_reg;
     cmd_type = uvm_reg_field::type_id::create("cmd_type");
     cmd_type.configure(this, 2, 24, "RW", 0, 0, 1, 0, 0);
 
+   cmd_mode = uvm_reg_field::type_id::create("cmd_mode");
+   cmd_mode.configure(this, 1, 26, "RW", 0, 0, 1, 0, 0);
+
+   
     reserved = uvm_reg_field::type_id::create("reserved");
-    reserved.configure(this, 5, 26, "RO", 0, 0, 1, 0, 0);
+    reserved.configure(this, 4, 27, "RO", 0, 0, 1, 0, 0);
+
 
     start = uvm_reg_field::type_id::create("start");
     start.configure(this, 1, 31, "RW", 0, 0, 1, 0, 0);

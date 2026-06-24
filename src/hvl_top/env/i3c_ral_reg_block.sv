@@ -23,7 +23,8 @@ class i3c_ral_reg_block extends uvm_reg_block;
     ctrl_inst.add_hdl_path_slice("ctrl_direction",15, 1);
     ctrl_inst.add_hdl_path_slice("ctrl_ccc",      16, 8);
     ctrl_inst.add_hdl_path_slice("ctrl_cmd_type", 24, 2);
-    ctrl_inst.add_hdl_path_slice("ctrl_reserved", 26, 5);
+   ctrl_inst.add_hdl_path_slice("ctrl_cmd_mode", 26, 1);
+ctrl_inst.add_hdl_path_slice("ctrl_reserved", 27, 4); 
     ctrl_inst.add_hdl_path_slice("ctrl_start",    31, 1);
 
   //  ctrl_inst.set_coverage(UVM_CVR_FIELD_VALS);

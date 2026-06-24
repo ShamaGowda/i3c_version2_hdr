@@ -23,6 +23,8 @@ package i3c_target_seq_pkg;
    `include "i3c_target_readOperationWithRandomDataTransferWidth_seq.sv"
    `include "i3c_target_randomOperationWithRandomDataTransferWidth_seq.sv"
    `include "i3c_target_writeOperationWithRandomWriteDataStatusNACK_seq.sv"
+ `include "i3c_target_hdr_write_seq.sv"
+  `include "i3c_target_hdr_read_seq.sv"
 
  `include "i3c_target_daa_seq.sv"
 

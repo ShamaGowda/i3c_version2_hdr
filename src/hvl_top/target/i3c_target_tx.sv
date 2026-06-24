@@ -19,10 +19,17 @@ bit [4:0] hdr_crc;
 bit hdr_parity;
 bit hdr_tbit;
 
-`uvm_field_queue_int(hdr_data,UVM_ALL_ON)
-`uvm_field_int(hdr_crc,UVM_ALL_ON)
-`uvm_field_int(hdr_parity,UVM_ALL_ON)
-`uvm_field_int(hdr_tbit,UVM_ALL_ON)
+//`uvm_object_utils_begin(i3c_target_tx)
+
+ // `uvm_field_queue_int(hdr_data,UVM_ALL_ON)
+ // `uvm_field_int(hdr_crc,UVM_ALL_ON)
+ // `uvm_field_int(hdr_parity,UVM_ALL_ON)
+  //`uvm_field_int(hdr_tbit,UVM_ALL_ON)
+
+//`uvm_object_utils_end
+
+
+
  
 typedef enum bit [1:0] {
     SDR,
