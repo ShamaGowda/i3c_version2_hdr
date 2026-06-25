@@ -425,7 +425,7 @@ task automatic sample_hdr_write(inout i3c_transfer_bits_s pkt,
 
   sample_hdr_entry();
   sample_hdr_ddr_data(pkt);
-  sample_hdr_crc();
+  sample_hdr_crc(pkt);
   sample_hdr_exit();
   pkt.txn_type = HDR_WRITE;
 
@@ -461,25 +461,90 @@ endtask : sample_hdr_ddr_data
 
 
 
-task sample_hdr_crc();
+// ── sample_hdr_word: capture one 16-bit DDR word ──────────────────────
+// DDR: one bit on SCL falling, one bit on SCL rising per pair
+task automatic sample_hdr_word(output bit [15:0] word);
+  int bits_done = 0;
+  bit [1:0] scl_sr = 2'b11;
+  bit [1:0] sda_sr;
 
- bit [4:0] rx_crc;
- bit [4:0] calc_crc;
+  while (bits_done < 16) begin
+    // Wait for SCL falling edge
+    detectEdge_scl(NEGEDGE);
+    word[15 - bits_done] = sda_i;
+    bits_done++;
 
- rx_crc = sample_crc();
+    if (bits_done < 16) begin
+      // Wait for SCL rising edge
+      detectEdge_scl(POSEDGE);
+      word[15 - bits_done] = sda_i;
+      bits_done++;
+    end
+  end
+endtask : sample_hdr_word
 
- calc_crc = calculate_hdr_crc(tx.hdr_data);
 
- if(rx_crc != calc_crc)
- begin
+// ── sample_crc: receive 5 CRC bits (MSB first) on SCL rising edges ────
+function automatic bit [4:0] sample_crc();
+  // CRC is clocked out 1 bit per SCL cycle — we sample on each SCL rise
+  // Called after DDR data phase; SCL is being driven by controller
+  // We simply read SDA on the next 5 SCL rising edges
+  bit [4:0] crc_val = 5'h00;
+  // Note: in a BFM this should be a task; using blocking-compatible function
+  // The caller (sample_hdr_crc) is already a task, so crc sampling
+  // is done inline there. This stub returns 0 and lets the task do the work.
+  return crc_val;
+endfunction : sample_crc
 
-   `uvm_error("HDR",
-      $sformatf("CRC mismatch exp=%0h got=%0h",
-      calc_crc,rx_crc))
 
- end
+// ── calculate_hdr_crc: CRC-5 polynomial 0x05, seed 0x1F ───────────────
+function automatic bit [4:0] calculate_hdr_crc(input bit [15:0] data[$]);
+  bit [4:0] crc = 5'h1F;
+  foreach (data[i]) begin
+    for (int b = 15; b >= 0; b--) begin
+      bit inv = data[i][b] ^ crc[4];
+      crc = {crc[3:0], 1'b0};
+      if (inv) crc ^= 5'h05;
+    end
+  end
+  return ~crc;
+endfunction : calculate_hdr_crc
 
-endtask
+
+// ── sample_hdr_crc: sample 5 CRC bits then verify ─────────────────────
+task automatic sample_hdr_crc(inout i3c_transfer_bits_s pkt);
+  bit [4:0] rx_crc  = 5'h00;
+  bit [4:0] calc_crc;
+  bit [15:0] hdr_data_q[$];
+
+  // Sample 5 CRC bits, one per SCL falling→rising pair
+  for (int b = 4; b >= 0; b--) begin
+    detectEdge_scl(NEGEDGE);
+    detectEdge_scl(POSEDGE);
+    rx_crc[b] = sda_i;
+  end
+
+  // Reconstruct hdr_data queue from pkt.writeData
+  hdr_data_q = {};
+  begin
+    int words = pkt.no_of_i3c_bits_transfer / 16;
+    for (int i = 0; i < words; i++) begin
+      bit [15:0] w = {pkt.writeData[i*2], pkt.writeData[i*2+1]};
+      hdr_data_q.push_back(w);
+    end
+  end
+
+  calc_crc = calculate_hdr_crc(hdr_data_q);
+
+  if (rx_crc !== calc_crc)
+    `uvm_error("HDR_MON",
+      $sformatf("CRC mismatch: expected=5'b%05b received=5'b%05b",
+                calc_crc, rx_crc))
+  else
+    `uvm_info("HDR_MON",
+      $sformatf("CRC OK = 5'b%05b", rx_crc), UVM_HIGH)
+
+endtask : sample_hdr_crc
 
 
 
@@ -515,3 +580,4 @@ endtask
 endinterface : i3c_target_monitor_bfm
  
 `endif
+
