@@ -17,7 +17,6 @@ uvm_tlm_analysis_fifo #(i3c_target_tx)  target_analysis_fifo;
   int read_pass;
   int read_fail;
 
-
   // DAA Counters 
   int daa_addr_pass;
   int daa_addr_fail;
@@ -25,16 +24,27 @@ uvm_tlm_analysis_fifo #(i3c_target_tx)  target_analysis_fifo;
   int daa_parity_fail;
   int daa_devices_seen;
 
+  // HDR Counters
+  int hdr_write_pass;
+  int hdr_write_fail;
+  int hdr_read_pass;
+  int hdr_read_fail;
+  int hdr_txn_count;
+
 //expected values from CTRL 
   bit [6:0]  exp_address;
   bit [7:0]  exp_length;
   bit        exp_direction;
   bit [1:0]  exp_cmd_type;
   bit [7:0]  exp_ccc;
+  bit        exp_cmd_mode;      // bit[26] of CTRL — 1 = HDR mode
 
   //  SDR data queues 
   bit [7:0]  exp_write_data[$];
   bit [7:0]  exp_rd_wr_data[$];
+
+  // HDR expected data queue (bytes loaded via WDATAB before CTRL write)
+  bit [7:0]  exp_hdr_write_data[$];
 
   // DAA expected state 
   bit [6:0]  daa_next_exp_addr;
@@ -55,6 +65,11 @@ uvm_tlm_analysis_fifo #(i3c_target_tx)  target_analysis_fifo;
   extern protected function bit  is_daa_transaction();
   extern protected task          compare_with_daa_target();
 
+  //  HDR tasks
+  extern protected function bit  is_hdr_transaction();
+  extern protected task          compare_hdr_write();
+  extern protected task          compare_hdr_read();
+
 endclass : i3c_scoreboard
 
 
@@ -62,7 +77,6 @@ function i3c_scoreboard::new(string name = "i3c_scoreboard",
                               uvm_component parent = null);
   super.new(name, parent);
 endfunction
-    
 
 function void i3c_scoreboard::build_phase(uvm_phase phase);
   super.build_phase(phase);
@@ -86,15 +100,31 @@ function bit i3c_scoreboard::is_daa_transaction();
   return 0;
 endfunction
 
+// HDR transaction: CTRL bit[26] (cmd_mode) = 1
+function bit i3c_scoreboard::is_hdr_transaction();
+  return exp_cmd_mode;
+endfunction
 
-// run_phase
 
+// run_phase — dispatch to HDR, DAA, or SDR comparison
 task i3c_scoreboard::run_phase(uvm_phase phase);
   super.run_phase(phase);
   forever begin
     collect_apb_transaction();
 
-    if(is_daa_transaction()) begin
+    if (is_hdr_transaction()) begin
+      if (exp_direction == 1'b0) begin
+        `uvm_info("SB",
+          $sformatf("HDR WRITE transaction detected: addr=0x%0x len=%0d",
+                    exp_address, exp_length), UVM_MEDIUM)
+        compare_hdr_write();
+      end else begin
+        `uvm_info("SB",
+          $sformatf("HDR READ transaction detected: addr=0x%0x len=%0d",
+                    exp_address, exp_length), UVM_MEDIUM)
+        compare_hdr_read();
+      end
+    end else if(is_daa_transaction()) begin
       `uvm_info("SB",
         $sformatf("DAA transaction detected: cmd_type=0x%0x ccc=0x%0x",
                   exp_cmd_type, exp_ccc), UVM_MEDIUM)
@@ -106,44 +136,195 @@ task i3c_scoreboard::run_phase(uvm_phase phase);
 endtask
 
 
+// collect_apb_transaction
+// Accumulates WDATAB bytes and breaks on CTRL write with cmd_start=1
 task i3c_scoreboard::collect_apb_transaction();
   apb_master_tx apb_pkt;
   exp_write_data.delete();
+  exp_hdr_write_data.delete();
 
   forever begin
     apb_analysis_fifo.get(apb_pkt);
     apb_tx_count++;
 
+    // WDATAB write (addr 0x30) — collect for both SDR and HDR write
     if(apb_pkt.pwrite == apb_global_pkg::WRITE &&
        apb_pkt.paddr[6:0] == 7'h30) begin
       exp_write_data.push_back(apb_pkt.pwdata[7:0]);
+      exp_hdr_write_data.push_back(apb_pkt.pwdata[7:0]);
       exp_rd_wr_data.push_back(apb_pkt.pwdata[7:0]);
       `uvm_info("SB",
         $sformatf("WDATAB collected = 0x%0x", apb_pkt.pwdata[7:0]), UVM_HIGH)
     end
 
+    // CTRL write with cmd_start=1 (bit[31])
     if(apb_pkt.pwrite == apb_global_pkg::WRITE &&
        apb_pkt.paddr[6:0] == 7'h0C &&
        apb_pkt.pwdata[31] == 1'b1) begin
       decode_ctrl(apb_pkt.pwdata);
       `uvm_info("SB", $sformatf(
-        "CTRL decoded: addr=0x%0x dir=%0b len=%0d cmd_type=0x%0x ccc=0x%0x",
+        "CTRL decoded: addr=0x%0x dir=%0b len=%0d cmd_type=0x%0x ccc=0x%0x cmd_mode=%0b",
         exp_address, exp_direction, exp_length,
-        exp_cmd_type, exp_ccc), UVM_MEDIUM)
+        exp_cmd_type, exp_ccc, exp_cmd_mode), UVM_MEDIUM)
       break;
     end
   end
 endtask
 
 
-
+// decode_ctrl — extract all fields including bit[26]=cmd_mode (HDR flag)
 function void i3c_scoreboard::decode_ctrl(bit [31:0] ctrl_val);
   exp_address   = ctrl_val[6:0];
   exp_length    = ctrl_val[14:7];
   exp_direction = ctrl_val[15];
   exp_ccc       = ctrl_val[23:16];
   exp_cmd_type  = ctrl_val[25:24];
+  exp_cmd_mode  = ctrl_val[26];      // 1 = HDR mode
 endfunction
+
+
+// ── HDR WRITE comparison ──────────────────────────────────────────────
+// The DUT sends DDR frames; target BFM receives them and reports via
+// target_analysis_port. We compare the bytes the DUT sent (from WDATAB)
+// against what the target monitor captured.
+task i3c_scoreboard::compare_hdr_write();
+  i3c_target_tx tgt;
+  hdr_txn_count++;
+
+  // Get the target monitor's captured HDR_WRITE transaction
+  target_analysis_fifo.get(tgt);
+  target_tx_count++;
+
+  `uvm_info("SB_HDR", $sformatf("HDR WRITE: tgt pkt:\n%s", tgt.sprint()),
+            UVM_HIGH)
+
+  // ── Address check
+  if (exp_address == tgt.targetAddress)
+    `uvm_info("SB_HDR_ADDR_MATCH",
+      $sformatf("HDR WRITE addr match: 0x%0x", exp_address), UVM_MEDIUM)
+  else
+    `uvm_error("SB_HDR_ADDR_MISMATCH",
+      $sformatf("HDR WRITE addr: expected 0x%0x got 0x%0x",
+                exp_address, tgt.targetAddress))
+
+  // ── txn_type check
+  if (tgt.txn_type !== i3c_target_tx::HDR_WRITE)
+    `uvm_error("SB_HDR_TXN_TYPE",
+      $sformatf("Expected HDR_WRITE from target but got %s",
+                tgt.txn_type.name()))
+
+  // ── Data comparison: WDATAB bytes vs target captured writeData
+  begin
+    int n_exp    = exp_hdr_write_data.size();
+    int n_actual = tgt.writeData.size();
+
+    `uvm_info("SB_HDR_WRITE",
+      $sformatf("HDR WRITE: APB loaded %0d bytes, CTRL len=%0d, target got %0d bytes",
+                n_exp, exp_length, n_actual), UVM_MEDIUM)
+
+    if (n_exp == 0 && n_actual == 0) begin
+      `uvm_info("SB_HDR_WRITE", "HDR WRITE: no data payload to compare", UVM_MEDIUM)
+    end else begin
+      // Compare up to the smaller of the two
+      for (int i = 0; i < n_actual; i++) begin
+        bit [7:0] exp_val = (i < n_exp) ? exp_hdr_write_data[i] : 8'hFF;
+        if (exp_val == tgt.writeData[i]) begin
+          `uvm_info("SB_HDR_WDATA_MATCH",
+            $sformatf("HDR writeData[%0d]: exp=0x%0x got=0x%0x",
+                      i, exp_val, tgt.writeData[i]), UVM_MEDIUM)
+          hdr_write_pass++;
+        end else begin
+          `uvm_error("SB_HDR_WDATA_MISMATCH",
+            $sformatf("HDR writeData[%0d]: exp=0x%0x got=0x%0x",
+                      i, exp_val, tgt.writeData[i]))
+          hdr_write_fail++;
+        end
+      end
+
+      if (n_exp > n_actual)
+        `uvm_info("SB_HDR_SHORT",
+          $sformatf("HDR WRITE: DUT sent fewer bytes (%0d) than loaded (%0d)",
+                    n_actual, n_exp), UVM_LOW)
+    end
+  end
+endtask : compare_hdr_write
+
+
+// ── HDR READ comparison ───────────────────────────────────────────────
+// The target drives DDR frames back to the DUT; DUT stores in Rx FIFO.
+// APB reads RDATAB to retrieve what the DUT captured.
+// We compare: target's readData (what it drove) vs APB prdata (what DUT got).
+task i3c_scoreboard::compare_hdr_read();
+  i3c_target_tx  tgt;
+  apb_master_tx  rd_pkt;
+  bit [7:0]      apb_read_data[$];
+  int            rd_count = 0;
+  hdr_txn_count++;
+
+  // Get the target transaction (target monitor captures what it drove)
+  target_analysis_fifo.get(tgt);
+  target_tx_count++;
+
+  `uvm_info("SB_HDR", $sformatf("HDR READ: tgt pkt:\n%s", tgt.sprint()),
+            UVM_HIGH)
+
+  // ── Address check
+  if (exp_address == tgt.targetAddress)
+    `uvm_info("SB_HDR_ADDR_MATCH",
+      $sformatf("HDR READ addr match: 0x%0x", exp_address), UVM_MEDIUM)
+  else
+    `uvm_error("SB_HDR_ADDR_MISMATCH",
+      $sformatf("HDR READ addr: expected 0x%0x got 0x%0x",
+                exp_address, tgt.targetAddress))
+
+  // ── txn_type check
+  if (tgt.txn_type !== i3c_target_tx::HDR_READ)
+    `uvm_error("SB_HDR_TXN_TYPE",
+      $sformatf("Expected HDR_READ from target but got %s",
+                tgt.txn_type.name()))
+
+  // ── Collect RDATAB reads from APB (what DUT stored in Rx FIFO)
+  while (rd_count < int'(exp_length)) begin
+    apb_analysis_fifo.get(rd_pkt);
+    apb_tx_count++;
+    if (rd_pkt.pwrite == apb_global_pkg::READ &&
+        rd_pkt.paddr[6:0] == 7'h40) begin
+      apb_read_data.push_back(rd_pkt.prdata[7:0]);
+      `uvm_info("SB_HDR_RDATAB",
+        $sformatf("HDR RDATAB[%0d] = 0x%0x", rd_count, rd_pkt.prdata[7:0]),
+        UVM_MEDIUM)
+      rd_count++;
+    end
+  end
+
+  // ── Compare: target.readData[i] (what target drove) == apb_read_data[i] (what DUT got)
+  begin
+    int n_tgt = tgt.readData.size();
+    int n_apb = apb_read_data.size();
+
+    `uvm_info("SB_HDR_READ",
+      $sformatf("HDR READ: target drove %0d bytes, DUT RDATAB returned %0d bytes",
+                n_tgt, n_apb), UVM_MEDIUM)
+
+    for (int i = 0; i < n_apb && i < n_tgt; i++) begin
+      if (tgt.readData[i] == apb_read_data[i]) begin
+        `uvm_info("SB_HDR_RDATA_MATCH",
+          $sformatf("HDR readData[%0d]: target drove 0x%0x, DUT got 0x%0x",
+                    i, tgt.readData[i], apb_read_data[i]), UVM_MEDIUM)
+        hdr_read_pass++;
+      end else begin
+        `uvm_error("SB_HDR_RDATA_MISMATCH",
+          $sformatf("HDR readData[%0d]: target drove 0x%0x, DUT got 0x%0x",
+                    i, tgt.readData[i], apb_read_data[i]))
+        hdr_read_fail++;
+      end
+    end
+
+    if (n_tgt != n_apb)
+      `uvm_info("SB_HDR_READ_SIZE",
+        $sformatf("HDR READ size: target=%0d APB=%0d", n_tgt, n_apb), UVM_LOW)
+  end
+endtask : compare_hdr_read
 
 
 task i3c_scoreboard::compare_with_daa_target();
@@ -158,7 +339,6 @@ task i3c_scoreboard::compare_with_daa_target();
     $sformatf("DAA target pkt[%0d]:\n%s", daa_devices_seen, tgt.sprint()),
     UVM_HIGH)
 
-
   if(tgt.txn_type !== i3c_target_tx::DAA) begin
     `uvm_error("SB_DAA_TXN_TYPE",
       $sformatf("Expected DAA transaction but got txn_type=%s",
@@ -166,11 +346,9 @@ task i3c_scoreboard::compare_with_daa_target();
     return;
   end
 
- 
   `uvm_info("SB_DAA_CTRL_ADDR",
     $sformatf("CTRL address field = 0x%0h (DAA uses broadcast implicitly)",
               exp_address), UVM_MEDIUM)
-
 
   if(exp_cmd_type == CMD_TYPE_CCC) begin
     if(exp_ccc == ENTDAA_CCC_CODE)
@@ -185,7 +363,6 @@ task i3c_scoreboard::compare_with_daa_target();
       "cmd_type=3 (explicit DAA)", UVM_MEDIUM)
   end
 
-    
   if(exp_cmd_type == CMD_TYPE_DAA)
     `uvm_info("SB_DAA_CTRL_CMD",
       "CTRL cmd_type = 3 (explicit DAA) ", UVM_MEDIUM)
@@ -197,12 +374,10 @@ task i3c_scoreboard::compare_with_daa_target();
       $sformatf("CTRL cmd_type=0x%0x ccc=0x%0x does not indicate DAA",
                 exp_cmd_type, exp_ccc))
 
- 
   `uvm_info("SB_DAA_DEVICE_INFO",
     $sformatf("Device[%0d]: PID=0x%0h BCR=0x%0h DCR=0x%0h",
               daa_devices_seen-1, tgt.pid, tgt.bcr, tgt.dcr), UVM_LOW)
 
- 
   exp_dyn_addr = daa_next_exp_addr;
   if(tgt.dynamic_address !== exp_dyn_addr) begin
     `uvm_error("SB_DAA_DYNADDR",
@@ -216,7 +391,6 @@ task i3c_scoreboard::compare_with_daa_target();
     daa_next_exp_addr++;
   end
 
- 
   if(tgt.daa_ack === ACK) begin
     `uvm_info("SB_DAA_PARITY",
       $sformatf("Parity OK for addr 0x%0h (daa_ack=ACK) ",
@@ -229,7 +403,6 @@ task i3c_scoreboard::compare_with_daa_target();
     daa_parity_fail++;
   end
 
-  
   if(tgt.bcr[7] !== 1'b0)
     `uvm_error("SB_DAA_BCR_ROLE",
       $sformatf("BCR[7] must be 0 (target role) but got 1 for PID 0x%0h",
@@ -240,7 +413,6 @@ task i3c_scoreboard::compare_with_daa_target();
 
 endtask : compare_with_daa_target
 
-    
 
 task i3c_scoreboard::compare_with_target();
   i3c_target_tx tgt;
@@ -356,8 +528,6 @@ task i3c_scoreboard::compare_with_target();
   end
 endtask : compare_with_target
 
-    
-
 
 function void i3c_scoreboard::check_phase(uvm_phase phase);
   super.check_phase(phase);
@@ -373,19 +543,32 @@ function void i3c_scoreboard::check_phase(uvm_phase phase);
     "  Devices seen               : %0d\n",
     "  Dyn address pass / fail    : %0d / %0d\n", 
     "  Parity / ACK pass / fail   : %0d / %0d\n",
+    "  -- HDR --\n",
+    "  HDR transactions           : %0d\n",
+    "  HDR write byte pass / fail : %0d / %0d\n",
+    "  HDR read  byte pass / fail : %0d / %0d\n",
     "=============================================="},
     apb_tx_count,    target_tx_count,
     write_pass,      write_fail,
     read_pass,       read_fail,
     daa_devices_seen,
     daa_addr_pass,   daa_addr_fail,   
-    daa_parity_pass, daa_parity_fail),
+    daa_parity_pass, daa_parity_fail,
+    hdr_txn_count,
+    hdr_write_pass,  hdr_write_fail,
+    hdr_read_pass,   hdr_read_fail),
     UVM_NONE)
 
   if(write_fail != 0)
     `uvm_error("SB_SUMMARY", "Write data mismatches detected")
   if(read_fail != 0)
     `uvm_error("SB_SUMMARY", "Read data mismatches detected")
+  if(hdr_write_fail != 0)
+    `uvm_error("SB_SUMMARY",
+      $sformatf("%0d HDR write data mismatches detected", hdr_write_fail))
+  if(hdr_read_fail != 0)
+    `uvm_error("SB_SUMMARY",
+      $sformatf("%0d HDR read data mismatches detected", hdr_read_fail))
 
   if(daa_addr_fail != 0)
     `uvm_error("SB_SUMMARY",
@@ -411,3 +594,4 @@ function void i3c_scoreboard::check_phase(uvm_phase phase);
 endfunction : check_phase
     
 `endif    
+

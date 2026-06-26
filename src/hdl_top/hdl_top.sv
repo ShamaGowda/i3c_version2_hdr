@@ -120,7 +120,7 @@ I3C_TOP dut(
 .r_data(r_data),
 
 .scl_i(I3C_SCL),
-.scl_o(scl_o),
+
 .sda_i(I3C_SDA),
 .sda_o(sda_o),
 .sda_oe(sda_oe)
