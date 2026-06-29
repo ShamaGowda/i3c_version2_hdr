@@ -406,6 +406,88 @@ interface i3c_target_monitor_bfm(input pclk,
     `uvm_info("TARGET_DRIVER_BFM",
       $sformatf("scl %s detected", scl_edge_value.name()), UVM_HIGH);
   endtask: detectEdge_scl
+// ── sample_transaction: unified monitor entry point ───────────────────
+// Detects HDR vs SDR from the bus after the address ACK.
+// After address + ACK: if SCL stays HIGH and SDA falls 3 times → HDR.
+// Otherwise → SDR data bytes follow.
+task automatic sample_transaction(inout i3c_transfer_bits_s pkt,
+                                   inout i3c_transfer_cfg_s  cfg);
+
+  // Step 1 — Detect START
+  detect_start();
+
+  // Step 2 — Sample 7-bit address
+  sample_target_address(pkt);
+
+  // Step 3 — Sample R/W bit
+  sample_operation(pkt.operation);
+
+  // Step 4 — Drive/sample ACK
+  sampleAddressAck(pkt.targetAddressStatus);
+
+  if (pkt.targetAddressStatus != ACK) begin
+    detect_stop();
+    return;
+  end
+
+  // Step 5 — Detect HDR entry: 3 SDA falling edges while SCL=1
+  // Watch for up to 8 SCL cycles; if we see HDR entry pattern → HDR path
+  begin
+    int        fall_count = 0;
+    bit [1:0]  sda_sr     = 2'b11;
+    bit [1:0]  scl_sr     = 2'b11;
+    int        timeout    = 0;
+    bit        hdr_detected = 0;
+
+    // Peek at the next few pclk cycles to detect HDR entry
+    fork
+      begin : detect_hdr_entry
+        while (fall_count < 3) begin
+          @(negedge pclk);
+          sda_sr = {sda_sr[0], sda_i};
+          scl_sr = {scl_sr[0], scl_i};
+          // SDA falling edge while SCL stays high = HDR entry bit
+          if (sda_sr == NEGEDGE && scl_sr == 2'b11) begin
+            fall_count++;
+            if (fall_count == 3) begin
+              hdr_detected = 1;
+              disable detect_hdr_entry;
+            end
+          end
+          // SCL falling edge = SDR data starting (not HDR entry)
+          else if (scl_sr == NEGEDGE) begin
+            disable detect_hdr_entry;
+          end
+        end
+      end
+    join
+
+    if (hdr_detected) begin
+      // HDR mode — determine direction and sample accordingly
+      `uvm_info("MON_HDR", "HDR entry pattern detected on monitor", UVM_MEDIUM)
+      if (pkt.operation == WRITE) begin
+        pkt.txn_type = HDR_WRITE;
+        sample_hdr_ddr_data(pkt);
+        sample_hdr_crc(pkt);
+        sample_hdr_exit();
+      end else begin
+        // HDR READ — target was driving, monitor just observes
+        pkt.txn_type = HDR_READ;
+        sample_hdr_ddr_data(pkt);
+        sample_hdr_crc(pkt);
+        sample_hdr_exit();
+      end
+    end else begin
+      // SDR mode — standard data phase
+      if (pkt.operation == WRITE) begin
+        sampleWriteDataAndACK(pkt, cfg);
+      end else begin
+        sampleReadDataAndACK(pkt, cfg);
+      end
+    end
+  end
+
+endtask : sample_transaction
 
 
 ///////////////////////////////////////////////HDR//////////////////////

@@ -37,6 +37,7 @@ package i3c_test_pkg;
 `include "i3c_sdr_or_daa_write_8b_test.sv"
 `include "i3c_hdr_write_test.sv"
   `include "i3c_hdr_read_test.sv"
+`include "i3c_hdr_write_read_test.sv"
 
  `include "i3c_writeOperationWith8bitsData_test.sv"
  `include "i3c_readOperationWith8bitsData_test.sv"

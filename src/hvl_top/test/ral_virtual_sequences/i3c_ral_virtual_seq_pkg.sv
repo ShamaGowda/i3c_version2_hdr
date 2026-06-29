@@ -21,6 +21,7 @@ package i3c_ral_virtual_seq_pkg;
   `include "i3c_invalid_addr_write_virtual_seq.sv"
   `include "i3c_fifo_full_write_virtual_seq.sv"
 `include "i3c_ccc_coverage_virtual_seq.sv"
+ude "i3c_hdr_write_read_virtual_seq.sv"
 
   `include "i3c_rdatab_ro_seq.sv"
   `include "i3c_sdr_write_read_virtual_seq.sv"
