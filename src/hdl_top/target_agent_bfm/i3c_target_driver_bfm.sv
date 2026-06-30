@@ -16,7 +16,7 @@ interface i3c_target_driver_bfm(
 
   i3c_fsm_state_e state;
   bit [7:0]  rdata;
-  bit [1:0]  scl_local = 2'b11;
+  //bit [1:0]  scl_local = 2'b11;
 
   import uvm_pkg::*;
   `include "uvm_macros.svh"
@@ -789,17 +789,20 @@ endtask : driveWdataAck
     scl_o   <= value;
   endtask : drive_scl
 
-  task detectEdge_scl(input edge_detect_e edgeSCL);
+ task detectEdge_scl(input edge_detect_e edgeSCL);
     edge_detect_e scl_edge_value;
+    bit [1:0] local_sr;
+    // Seed with the current SCL level so this call never inherits stale
+    // history from a different (unrelated) detectEdge_scl() invocation.
+    local_sr = {scl_i, scl_i};
     do begin
       @(negedge pclk);
-      scl_local = {scl_local[0], scl_i};
-    end while(!(scl_local == edgeSCL));
-    scl_edge_value = edge_detect_e'(scl_local);
+      local_sr = {local_sr[0], scl_i};
+    end while(!(local_sr == edgeSCL));
+    scl_edge_value = edge_detect_e'(local_sr);
     `uvm_info("TARGET_DRIVER_BFM",
-      $sformatf("scl %s detected",
-                scl_edge_value.name()), UVM_HIGH)
-  endtask : detectEdge_scl
+      $sformatf("scl %s detected", scl_edge_value.name()), UVM_HIGH)
+  endtask : detectEdge_scl 
 
 endinterface : i3c_target_driver_bfm
 

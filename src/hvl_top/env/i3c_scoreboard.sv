@@ -7,6 +7,7 @@ class i3c_scoreboard extends uvm_component;
 uvm_tlm_analysis_fifo #(apb_master_tx)  apb_analysis_fifo;  
 uvm_tlm_analysis_fifo #(i3c_target_tx)  target_analysis_fifo;
 
+localparam realtime HDR_READ_TIMEOUT_NS = 150000;
   i3c_env_config i3c_env_cfg_h;
 
   //SDR Counters 
@@ -254,16 +255,38 @@ endtask : compare_hdr_write
 // The target drives DDR frames back to the DUT; DUT stores in Rx FIFO.
 // APB reads RDATAB to retrieve what the DUT captured.
 // We compare: target's readData (what it drove) vs APB prdata (what DUT got).
+
 task i3c_scoreboard::compare_hdr_read();
   i3c_target_tx  tgt;
   apb_master_tx  rd_pkt;
   bit [7:0]      apb_read_data[$];
   int            rd_count = 0;
+  bit            got_tgt_txn = 0;
   hdr_txn_count++;
 
-  // Get the target transaction (target monitor captures what it drove)
-  target_analysis_fifo.get(tgt);
+  // Get the target transaction (target monitor captures what it drove),
+  // bounded by a timeout so a missing/failed target transaction is
+  // reported as an error instead of blocking forever.
+  fork
+    begin
+      target_analysis_fifo.get(tgt);
+      got_tgt_txn = 1;
+    end
+    begin
+      #(HDR_READ_TIMEOUT_NS);  // define alongside other scoreboard params, e.g. 10000
+    end
+  join_any
+  disable fork;
+
+  if (!got_tgt_txn) begin
+    `uvm_error("SB_HDR_READ_TIMEOUT",
+      "HDR READ: no target transaction received within timeout — target likely NACK'd address or never entered HDR mode")
+    return;
+  end
+
   target_tx_count++;
+
+
 
   `uvm_info("SB_HDR", $sformatf("HDR READ: tgt pkt:\n%s", tgt.sprint()),
             UVM_HIGH)
