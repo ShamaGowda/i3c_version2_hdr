@@ -239,6 +239,7 @@ endtask : sample_daa_ccc_byte
   
     do begin
       @(negedge pclk);
+      #1;
       scl_loc = {scl_loc[0], scl_i};
       sda_loc = {sda_loc[0], sda_i};
     end while(!(sda_loc == NEGEDGE && scl_loc == 2'b11));
@@ -379,6 +380,7 @@ endtask : drive_daa_pid_bcr_dcr
     `uvm_info(name, "detect_start waiting", UVM_HIGH)
     do begin
       @(negedge pclk);
+      #1;
       scl_local = {scl_local[0], scl_i};
       sda_local = {sda_local[0], sda_i};
     end while(!(sda_local == NEGEDGE && scl_local == 2'b11));
@@ -572,6 +574,7 @@ task automatic hdr_wait_entry_pattern();
 
   while (fall_count < 3) begin
     @(negedge pclk);
+    #1;
     sda_sr = {sda_sr[0], sda_i};
     scl_sr = {scl_sr[0], scl_i};
     // SDA falling edge (1→0) while SCL was high both cycles
@@ -797,6 +800,7 @@ endtask : driveWdataAck
     local_sr = {scl_i, scl_i};
     do begin
       @(negedge pclk);
+      #1;
       local_sr = {local_sr[0], scl_i};
     end while(!(local_sr == edgeSCL));
     scl_edge_value = edge_detect_e'(local_sr);

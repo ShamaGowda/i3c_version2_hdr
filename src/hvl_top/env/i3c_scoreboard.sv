@@ -190,10 +190,29 @@ endfunction
 // against what the target monitor captured.
 task i3c_scoreboard::compare_hdr_write();
   i3c_target_tx tgt;
+  bit           got_tgt_txn = 0;
   hdr_txn_count++;
 
-  // Get the target monitor's captured HDR_WRITE transaction
-  target_analysis_fifo.get(tgt);
+  // Get the target monitor's captured HDR_WRITE transaction, bounded by
+  // a timeout so a missing/NACK'd target transaction is reported as an
+  // error instead of blocking forever.
+  fork
+    begin
+      target_analysis_fifo.get(tgt);
+      got_tgt_txn = 1;
+    end
+    begin
+      #(HDR_READ_TIMEOUT_NS);
+    end
+  join_any
+  disable fork;
+
+  if (!got_tgt_txn) begin
+    `uvm_error("SB_HDR_WRITE_TIMEOUT",
+      "HDR WRITE: no target transaction received within timeout — target likely NACK'd address or never entered HDR mode")
+    return;
+  end
+
   target_tx_count++;
 
   `uvm_info("SB_HDR", $sformatf("HDR WRITE: tgt pkt:\n%s", tgt.sprint()),
