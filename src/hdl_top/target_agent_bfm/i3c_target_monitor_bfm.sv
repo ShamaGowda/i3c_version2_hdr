@@ -273,6 +273,7 @@ interface i3c_target_monitor_bfm(input pclk,
   
     do begin
       @(negedge pclk);
+      #1;
       scl_local = {scl_local[0], scl_i};
       sda_local = {sda_local[0], sda_i};
     end while(!(sda_local == NEGEDGE && scl_local == 2'b11));
@@ -284,6 +285,12 @@ interface i3c_target_monitor_bfm(input pclk,
   task sample_target_address(inout i3c_transfer_bits_s pkt);
     bit [TARGET_ADDRESS_WIDTH-1:0] address;
     state = ADDRESS;
+    // NOTE: this leading edge is required to align the monitor's sampling
+    // window with the driver BFM's sample_target_address() (see
+    // i3c_target_driver_bfm.sv). Without it the monitor samples one bit
+    // position early relative to the driver/DUT and decodes a corrupted
+    // address (e.g. expected 0x68 read back as 0x10/0x8/0x5d).
+    detectEdge_scl(POSEDGE);
     for(int k = TARGET_ADDRESS_WIDTH-1; k >= 0; k--) begin
       detectEdge_scl(POSEDGE);
       address[k] = sda_i;
@@ -395,10 +402,13 @@ interface i3c_target_monitor_bfm(input pclk,
   task detectEdge_scl(input edge_detect_e edgeSCL);
     bit [1:0]     scl_local;
     edge_detect_e scl_edge_value;
-    scl_local = 2'b11;
- 
+    // Seed with the current SCL level, matching the driver BFM, so this
+    // call never inherits stale history from a previous unrelated call.
+    scl_local = {scl_i, scl_i};
+
     do begin
       @(negedge pclk);
+      #1;
       scl_local = {scl_local[0], scl_i};
     end while(!(scl_local == edgeSCL));
  
@@ -430,6 +440,14 @@ task automatic sample_transaction(inout i3c_transfer_bits_s pkt,
     return;
   end
 
+  // NOTE: driver's driveAddressAck() sequence is NEGEDGE -> drive ACK ->
+  // POSEDGE (sampled here) -> NEGEDGE (SDA released back to 1). The
+  // driver's hdr_wait_entry_pattern() therefore starts looking for the
+  // HDR entry pattern from that trailing NEGEDGE. Mirror that here so the
+  // monitor's fall-edge counter starts from the same reference point as
+  // the driver/DUT instead of half a clock early.
+  detectEdge_scl(NEGEDGE);
+
   // Step 5 — Detect HDR entry: 3 SDA falling edges while SCL=1
   // Watch for up to 8 SCL cycles; if we see HDR entry pattern → HDR path
   begin
@@ -444,6 +462,7 @@ task automatic sample_transaction(inout i3c_transfer_bits_s pkt,
       begin : detect_hdr_entry
         while (fall_count < 3) begin
           @(negedge pclk);
+          #1;
           sda_sr = {sda_sr[0], sda_i};
           scl_sr = {scl_sr[0], scl_i};
           // SDA falling edge while SCL stays high = HDR entry bit
@@ -662,4 +681,5 @@ endtask
 endinterface : i3c_target_monitor_bfm
  
 `endif
+
 
