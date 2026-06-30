@@ -397,7 +397,7 @@ task sample_target_address(
   state = ADDRESS;
 
 
-  detectEdge_scl(NEGEDGE);  
+  //detectEdge_scl(NEGEDGE);  
 
   for(int k = TARGET_ADDRESS_WIDTH-1; k >= 0; k--) begin
     detectEdge_scl(POSEDGE);
