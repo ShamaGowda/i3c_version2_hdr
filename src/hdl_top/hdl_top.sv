@@ -140,7 +140,7 @@ I3C_TOP dut(
 
 //added apb_master agent bfm
 apb_master_agent_bfm apb_master_agent_bfm_h(apb_intf);
-i3c_controller_agent_bfm i3c_controller_agent_bfm_h(intf_target);
+i3c_controller_agent_bfm i3c_controller_agent_bfm_h(intf_controller);
 
 
 
@@ -150,7 +150,7 @@ i3c_controller_agent_bfm i3c_controller_agent_bfm_h(intf_target);
 genvar i;
 generate
 for (i=0; i<NO_OF_TARGETS; i++) begin : i3c_target_agent_bfm
-i3c_target_agent_bfm i3c_target_agent_bfm_h(intf_target);
+i3c_target_agent_bfm i3c_target_agent_bfm_h(intf_target);  
 end
 endgenerate
 
