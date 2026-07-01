@@ -80,6 +80,15 @@ i3c_if intf_target(
 .SDA(I3C_SDA)
 );
 
+//---------------------------------
+// I3C Controller Interface
+//---------------------------------
+i3c_if intf_controller(
+.pclk(clk),
+.areset(rst),
+.SCL(I3C_SCL),
+.SDA(I3C_SDA)
+);
 
 //---------------------------------
 // Pullups for I3C bus

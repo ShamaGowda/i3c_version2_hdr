@@ -474,7 +474,7 @@ task  automatic drive_hdr_write(
 
   // Step 2: Wait for HDR entry pattern
   // DUT toggles SDA 3 times while SCL=1 before starting DDR data
-  hdr_wait_entry_pattern();
+//  hdr_wait_entry_pattern();
 
   // Step 3: Receive DDR data words from DUT
  begin : hdr_rcv_block
@@ -526,7 +526,7 @@ task  automatic  drive_hdr_read(
   end
 
   // Step 2: Wait for HDR entry pattern from DUT
-  hdr_wait_entry_pattern();
+  //hdr_wait_entry_pattern();
 
   // Step 3: Drive DDR data words to DUT
   begin
